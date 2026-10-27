@@ -3,6 +3,7 @@ import type { TmdbMovieListResponse } from "./models";
 
 type GetMoviesWithFetchResponse = TmdbMovieListResponse;
 
+// 필수 미션: 순수 fetch로 인기 영화 요청
 async function getMoviesWithFetch(
   page = 1,
 ): Promise<GetMoviesWithFetchResponse> {
