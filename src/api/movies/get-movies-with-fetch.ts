@@ -14,11 +14,6 @@ async function getMoviesWithFetch(
 
   const response = await fetch(
     `${env.tmdbApiBaseUrl}/movie/popular?${searchParams}`,
-    {
-      headers: {
-        Authorization: `Bearer ${env.tmdbAccessToken}`,
-      },
-    },
   );
 
   if (!response.ok) {
