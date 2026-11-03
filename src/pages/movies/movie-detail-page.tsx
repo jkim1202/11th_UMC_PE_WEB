@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
 import { Link, useParams } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { getMovieDetail } from "../../api/movies/get-movie-detail";
-import type { TmdbMovieDetail } from "../../api/movies/models";
 import { getMovieDetailErrorMessage } from "../../utils/movies/get-movie-detail-error-message";
 import { getTmdbBackdropUrl, getTmdbPosterUrl } from "../../utils/movies/tmdb-image";
 import { BookmarkButton } from "../../components/bookmark-button";
@@ -12,45 +11,19 @@ export default function MovieDetailPage() {
   const parsedMovieId = Number(movieId);
   const isValidMovieId = Number.isInteger(parsedMovieId) && parsedMovieId > 0;
 
-  const [movie, setMovie] = useState<TmdbMovieDetail | null>(null);
-  const [isLoading, setIsLoading] = useState(isValidMovieId);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  // 필수 미션: 상세 화면을 TMDB API에 연결
-  useEffect(() => {
-    let ignore = false;
-
-    setMovie(null);
-    setErrorMessage(null);
-
-    if (!isValidMovieId) {
-      setIsLoading(false);
-      return;
-    }
-
-    setIsLoading(true);
-
-    getMovieDetail(parsedMovieId)
-      .then((response) => {
-        if (!ignore) setMovie(response);
-      })
-      .catch((error: unknown) => {
-        if (!ignore) setErrorMessage(getMovieDetailErrorMessage(error));
-      })
-      .finally(() => {
-        if (!ignore) setIsLoading(false);
-      });
-
-    return () => {
-      ignore = true;
-    };
-  }, [isValidMovieId, parsedMovieId]);
+  const movieDetailQuery = useQuery({
+    queryKey: ["movies", "detail", parsedMovieId],
+    queryFn: () => getMovieDetail(parsedMovieId),
+    enabled: isValidMovieId,
+    staleTime: 30 * 1000, // 미니 실습: 상세 조회만 30초
+  });
 
   // 필수 미션: 잘못된 번호, 로딩, 오류 상태 구분
   if (!isValidMovieId) return <main className="p-8 text-sm">올바르지 않은 영화 번호예요.</main>;
-  if (isLoading) return <main className="p-8 text-sm">영화 정보를 불러오는 중이에요.</main>;
-  if (errorMessage) return <main className="p-8 text-sm">{errorMessage}</main>;
-  if (!movie) return null;
+  if (movieDetailQuery.isPending) return <main className="p-8 text-sm">영화 정보를 불러오는 중이에요.</main>;
+  if (movieDetailQuery.isError) return <main className="p-8 text-sm">{getMovieDetailErrorMessage(movieDetailQuery.error)}</main>;
+
+  const movie = movieDetailQuery.data;
 
   return (
     <div className="flex min-h-[calc(100svh-57px)] flex-col">
