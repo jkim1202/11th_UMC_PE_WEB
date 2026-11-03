@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import type { FormEvent } from "react";
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { searchMovies } from "../../api/movies/search-movies";
-import type { TmdbMovieListItem } from "../../api/movies/models";
 import Footer from "../../components/layout/footer";
 import { BookmarkButton } from "../../components/bookmark-button";
 
@@ -10,40 +10,16 @@ export default function SearchPage() {
   const { query } = useSearch({ from: "/search" });
   const navigate = useNavigate({ from: "/search" });
   const [input, setInput] = useState(query);
-  const [movies, setMovies] = useState<TmdbMovieListItem[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // 필수 미션: 검색 화면을 TMDB API에 연결
-  useEffect(() => {
-    let ignore = false;
-    const normalizedQuery = query.trim();
+  const normalizedQuery = query.trim();
 
-    setMovies([]);
-    setErrorMessage(null);
+  const searchQuery = useQuery({
+    queryKey: ["movies", "search", { query: normalizedQuery }],
+    queryFn: () => searchMovies({ query: normalizedQuery }),
+    enabled: normalizedQuery.length > 0,
+  });
 
-    if (!normalizedQuery) {
-      setIsLoading(false);
-      return;
-    }
-
-    setIsLoading(true);
-
-    searchMovies({ query: normalizedQuery })
-      .then((response) => {
-        if (!ignore) setMovies(response.results);
-      })
-      .catch(() => {
-        if (!ignore) setErrorMessage("검색 결과를 불러오지 못했어요.");
-      })
-      .finally(() => {
-        if (!ignore) setIsLoading(false);
-      });
-
-    return () => {
-      ignore = true;
-    };
-  }, [query]);
+  const searchResults = searchQuery.data?.results ?? [];
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -61,15 +37,15 @@ export default function SearchPage() {
           <button className="rounded bg-[#191b20] px-3 py-1.5 text-[10px] font-bold text-white" type="submit"> {query ? "다시 검색" : "검색"}</button>
         </form>
 
-        {query ? (
+        {normalizedQuery ? (
           <>
-            <h2 className="mt-4 mb-3 text-xs font-bold text-[#191b20]">‘{query}’ 검색 결과 <span className="font-normal text-[#9aa1ab]">{movies.length}건</span></h2>
+            <h2 className="mt-4 mb-3 text-xs font-bold text-[#191b20]">‘{query}’ 검색 결과 <span className="font-normal text-[#9aa1ab]">{searchResults.length}건</span></h2>
             {/* 필수 미션: 로딩, 오류, 빈 결과, 성공 상태 구분 */}
-            {isLoading ? <p className="py-20 text-center text-sm text-[#727b8c]">검색 중이에요.</p>
-            : errorMessage ? <p className="py-20 text-center text-sm text-[#727b8c]">{errorMessage}</p>
-            : movies.length > 0 ? (
+            {searchQuery.isLoading ? <p className="py-20 text-center text-sm text-[#727b8c]">검색 중이에요.</p>
+            : searchQuery.isError ? <p className="py-20 text-center text-sm text-[#727b8c]">{searchQuery.error.message}</p>
+            : searchResults.length > 0 ? (
               <section className="grid grid-cols-2 gap-x-8 gap-y-3 max-[640px]:grid-cols-1" aria-label="검색 결과">
-                {movies.map((movie) => (
+                {searchResults.map((movie) => (
                   <article className="relative min-w-0 border-b border-[#e8ebef] pb-3" key={movie.id}>
                     <Link className="flex min-w-0 gap-3 no-underline" to="/movies/$movieId" params={{ movieId: String(movie.id) }}>
                       <img className="h-[88px] w-[58px] shrink-0 rounded object-cover" src={movie.poster_path ? `https://image.tmdb.org/t/p/w185${movie.poster_path}` : undefined} alt={`${movie.title} 포스터`} />
