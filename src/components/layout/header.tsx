@@ -17,7 +17,7 @@ function Navigation() {
     <nav className="flex gap-[22px]" aria-label="메인 메뉴">
       <Link className={cn("text-[11px] text-[#555] no-underline", pathname === "/" && "font-bold text-[#111] underline underline-offset-[5px]")} to="/">영화</Link>
       <Link className={cn("text-[11px] text-[#555] no-underline", pathname === "/search" && "font-bold text-[#111] underline underline-offset-[5px]")} to="/search" search={{ query: "" }}>검색</Link>
-      <a className="text-[11px] text-[#555] no-underline" href="/my">내 정보</a>
+      <Link className={cn("text-[11px] text-[#555] no-underline", pathname.startsWith("/my") && "font-bold text-[#111] underline underline-offset-[5px]")} to="/my">내 정보</Link>
     </nav>
   );
 }
@@ -28,7 +28,7 @@ function HeaderActions() {
       <Link className="grid h-[30px] w-[30px] place-items-center rounded-md border border-[#e5e7eb] p-1.5" to="/search" search={{ query: "" }} aria-label="검색">
         <img className="h-4 w-4" src="/icons/movie-icons/search.svg" alt="" />
       </Link>
-      <a className="rounded-md bg-[#2563eb] px-3.5 py-1.5 text-[11px] font-bold text-white no-underline" href="/login">로그인</a>
+      <Link className="rounded-md bg-[#2563eb] px-3.5 py-1.5 text-[11px] font-bold text-white no-underline" to="/login">로그인</Link>
     </div>
   );
 }
