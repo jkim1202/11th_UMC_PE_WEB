@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link, useNavigate } from "@tanstack/react-router";
 import type { ChangeEvent, SubmitEvent } from "react";
 import { checkEmailDuplicate } from "../../api/members/check-email-duplicate";
 import { checkNicknameDuplicate } from "../../api/members/check-nickname-duplicate";
@@ -98,6 +99,7 @@ export default function SignupPage() {
     nickname: initialDuplicateState,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
 
   const isEmailValid = EMAIL_REGEX.test(form.email.trim());
   const nicknameLength = form.nickname.trim().length;
@@ -154,7 +156,7 @@ export default function SignupPage() {
         password: form.password,
       });
       alert(response.message);
-      // 로그인 페이지 연결 후 주석 해제: navigate({ to: "/login" })
+      void navigate({ to: "/login" });
     } catch {
       alert("회원가입에 실패했어요. 다시 시도해 주세요.");
     } finally {
@@ -232,7 +234,7 @@ export default function SignupPage() {
         </button>
         <p className="mt-4 text-center text-[11px] text-[#727b8c]">
           이미 계정이 있나요?{" "}
-          <a className="font-bold text-[#2563eb]" href="/login">로그인</a>
+          <Link className="font-bold text-[#2563eb]" to="/login">로그인</Link>
         </p>
       </form>
     </main>
