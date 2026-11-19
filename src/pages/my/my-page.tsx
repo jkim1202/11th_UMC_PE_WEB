@@ -6,7 +6,7 @@ import type { TmdbMovieListItem } from "../../api/movies/models";
 import Footer from "../../components/layout/footer";
 import MovieGrid from "../../components/movies/movie-grid";
 import Pagination from "../../components/movies/pagination";
-import { mockProfile } from "../../data/mock-profile";
+import { useMeQuery } from "../../hooks/use-me-query";
 import { useBookmarkStore } from "../../stores/bookmark-store";
 
 const PAGE_SIZE = 20;
@@ -14,6 +14,7 @@ const PAGE_SIZE = 20;
 export default function MyPage() {
   const bookmarkedMovieIds = useBookmarkStore((state) => state.bookmarkedMovieIds);
   const [page, setPage] = useState(1);
+  const meQuery = useMeQuery();
 
   const totalPages = Math.max(1, Math.ceil(bookmarkedMovieIds.length / PAGE_SIZE));
   const currentPage = Math.min(page, totalPages);
@@ -45,25 +46,27 @@ export default function MyPage() {
           <h2 className="mb-3 text-xs font-bold text-[#111]" id="basic-info">기본 정보</h2>
           <div className="flex items-center gap-5 max-[640px]:flex-col max-[640px]:items-start max-[640px]:gap-4">
             <div className="grid h-[72px] w-[72px] shrink-0 place-items-center overflow-hidden rounded-full bg-[#e8ebef] text-[#111]">
-              {mockProfile.profileImageUrl ? (
-                <img className="h-full w-full object-cover" src={mockProfile.profileImageUrl} alt="프로필 이미지" />
-              ) : (
-                <svg className="h-7 w-7" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <circle cx="12" cy="8" r="4" />
-                  <path d="M4 20c0-3.5 3.6-6 8-6s8 2.5 8 6z" />
-                </svg>
-              )}
+              <svg className="h-7 w-7" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <circle cx="12" cy="8" r="4" />
+                <path d="M4 20c0-3.5 3.6-6 8-6s8 2.5 8 6z" />
+              </svg>
             </div>
-            <dl className="m-0 flex gap-[120px] max-[640px]:flex-col max-[640px]:gap-3">
-              <div>
-                <dt className="text-[9px] text-[#727b8c]">닉네임</dt>
-                <dd className="m-0 mt-1 text-xs font-bold text-[#111]">{mockProfile.nickname}</dd>
-              </div>
-              <div>
-                <dt className="text-[9px] text-[#727b8c]">이메일</dt>
-                <dd className="m-0 mt-1 break-all text-xs font-bold text-[#111]">{mockProfile.email}</dd>
-              </div>
-            </dl>
+            {meQuery.data ? (
+              <dl className="m-0 flex gap-[120px] max-[640px]:flex-col max-[640px]:gap-3">
+                <div>
+                  <dt className="text-[9px] text-[#727b8c]">닉네임</dt>
+                  <dd className="m-0 mt-1 text-xs font-bold text-[#111]">{meQuery.data.nickname}</dd>
+                </div>
+                <div>
+                  <dt className="text-[9px] text-[#727b8c]">이메일</dt>
+                  <dd className="m-0 mt-1 break-all text-xs font-bold text-[#111]">{meQuery.data.email}</dd>
+                </div>
+              </dl>
+            ) : (
+              <p className="m-0 text-xs text-[#727b8c]">
+                {meQuery.isError ? "내 정보를 불러오지 못했어요." : "내 정보를 불러오는 중이에요."}
+              </p>
+            )}
           </div>
         </section>
 
