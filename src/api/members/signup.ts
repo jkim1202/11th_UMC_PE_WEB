@@ -11,7 +11,6 @@ type SignupResponse = {
   code: string;
   message: string;
   result: {
-    memberId: number;
     email: string;
     nickname: string;
   };

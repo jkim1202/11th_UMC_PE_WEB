@@ -3,7 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { getMovieDetail } from "../../api/movies/get-movie-detail";
 import { getMovieDetailErrorMessage } from "../../utils/movies/get-movie-detail-error-message";
 import { getTmdbBackdropUrl, getTmdbPosterUrl } from "../../utils/movies/tmdb-image";
-import { BookmarkButton } from "../../components/bookmark-button";
+import { FavoriteButton } from "../../components/favorite-button";
+import MyRatingCard from "../../components/movies/my-rating-card";
 import Footer from "../../components/layout/footer";
 
 export default function MovieDetailPage() {
@@ -43,17 +44,9 @@ export default function MovieDetailPage() {
           <div>
             <h2 className="m-0 text-sm font-bold text-[#191b20]">{movie.tagline}</h2>
             <p className="mt-3 text-xs leading-[1.8] text-[#727b8c]">{movie.overview}</p>
-            <BookmarkButton movieId={movie.id} movieTitle={movie.title} variant="text" className="mt-4" />
+            <FavoriteButton movieId={movie.id} movieTitle={movie.title} className="mt-4" />
           </div>
-          <aside className="rounded bg-white p-3">
-            <h2 className="m-0 text-xs font-bold text-[#191b20]">내 평점</h2>
-            <p className="mt-1 text-[9px] text-[#9aa1ab]">별점을 남겨보세요.</p>
-            <div className="mt-2 flex gap-1" aria-label="평점 5점">
-              {[1, 2, 3, 4, 5].map((star) => <button className="h-6 w-6 rounded border border-[#e1e5ea] bg-white text-xs text-[#727b8c]" key={star} type="button" aria-label={`${star}점`}>★</button>)}
-            </div>
-            <textarea className="mt-3 h-16 w-full resize-none rounded border border-[#e1e5ea] p-2 text-[10px] outline-none" placeholder="한줄평을 남겨주세요." />
-            <button className="mt-2 w-full rounded bg-[#191b20] py-2 text-[10px] font-bold text-white" type="button">평점 저장</button>
-          </aside>
+          <MyRatingCard movieId={movie.id} />
         </section>
       </main>
       {/* 필수 미션: TMDB 출처 표기 */}
