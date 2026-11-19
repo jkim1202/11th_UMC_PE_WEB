@@ -6,13 +6,16 @@ import type { TmdbMovieListItem } from "../../api/movies/models";
 import Footer from "../../components/layout/footer";
 import MovieGrid from "../../components/movies/movie-grid";
 import Pagination from "../../components/movies/pagination";
+import { useFavoritesQuery } from "../../hooks/use-favorites";
 import { useMeQuery } from "../../hooks/use-me-query";
-import { useBookmarkStore } from "../../stores/bookmark-store";
 
 const PAGE_SIZE = 20;
 
 export default function MyPage() {
-  const bookmarkedMovieIds = useBookmarkStore((state) => state.bookmarkedMovieIds);
+  const favoritesQuery = useFavoritesQuery();
+  const bookmarkedMovieIds = (favoritesQuery.data ?? [])
+    .toSorted((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .map((favorite) => favorite.movieId);
   const [page, setPage] = useState(1);
   const meQuery = useMeQuery();
 
@@ -72,7 +75,9 @@ export default function MyPage() {
 
         <section className="py-5" aria-labelledby="my-bookmarks">
           <h2 className="mb-3 text-xs font-bold text-[#111]" id="my-bookmarks">내 즐겨찾기</h2>
-          {bookmarkedMovieIds.length === 0 ? <p className="py-16 text-center text-sm text-[#727b8c]">즐겨찾기한 영화가 없어요.</p>
+          {favoritesQuery.isPending ? <p className="py-16 text-center text-sm text-[#727b8c]">즐겨찾기를 불러오는 중이에요.</p>
+          : favoritesQuery.isError ? <p className="py-16 text-center text-sm text-[#727b8c]">즐겨찾기를 불러오지 못했어요.</p>
+          : bookmarkedMovieIds.length === 0 ? <p className="py-16 text-center text-sm text-[#727b8c]">즐겨찾기한 영화가 없어요.</p>
           : isLoading ? <p className="py-16 text-center text-sm text-[#727b8c]">즐겨찾기를 불러오는 중이에요.</p>
           : hasError && movies.length === 0 ? <p className="py-16 text-center text-sm text-[#727b8c]">즐겨찾기를 불러오지 못했어요.</p>
           : <MovieGrid movies={movies} />}

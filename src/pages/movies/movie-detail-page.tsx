@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getMovieDetail } from "../../api/movies/get-movie-detail";
 import { getMovieDetailErrorMessage } from "../../utils/movies/get-movie-detail-error-message";
 import { getTmdbBackdropUrl, getTmdbPosterUrl } from "../../utils/movies/tmdb-image";
-import { BookmarkButton } from "../../components/bookmark-button";
+import { FavoriteButton } from "../../components/favorite-button";
 import Footer from "../../components/layout/footer";
 
 export default function MovieDetailPage() {
@@ -43,7 +43,7 @@ export default function MovieDetailPage() {
           <div>
             <h2 className="m-0 text-sm font-bold text-[#191b20]">{movie.tagline}</h2>
             <p className="mt-3 text-xs leading-[1.8] text-[#727b8c]">{movie.overview}</p>
-            <BookmarkButton movieId={movie.id} movieTitle={movie.title} variant="text" className="mt-4" />
+            <FavoriteButton movieId={movie.id} movieTitle={movie.title} className="mt-4" />
           </div>
           <aside className="rounded bg-white p-3">
             <h2 className="m-0 text-xs font-bold text-[#191b20]">내 평점</h2>

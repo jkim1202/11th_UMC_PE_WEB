@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { login } from "../api/auth/login";
 import { useAuthStore } from "../stores/auth-store";
+import { FAVORITES_QUERY_KEY } from "./use-favorites";
 import { ME_QUERY_KEY } from "./use-me-query";
 
 export function useLoginMutation() {
@@ -15,6 +16,7 @@ export function useLoginMutation() {
       setAccessToken(response.result.accessToken);
       alert("로그인에 성공했어요.");
       void queryClient.invalidateQueries({ queryKey: ME_QUERY_KEY });
+      queryClient.removeQueries({ queryKey: FAVORITES_QUERY_KEY });
       void navigate({ to: "/" });
     },
     onError: () => {
