@@ -29,6 +29,7 @@ function Navigation() {
 
 function HeaderActions() {
   const accessToken = useAuthStore((state) => state.accessToken);
+  const hasHydrated = useAuthStore((state) => state.hasHydrated);
   const meQuery = useMeQuery();
 
   return (
@@ -36,7 +37,10 @@ function HeaderActions() {
       <Link className="grid h-[30px] w-[30px] place-items-center rounded-md border border-[#e5e7eb] p-1.5" href="/search" aria-label="검색">
         <img className="h-4 w-4" src="/icons/movie-icons/search.svg" alt="" />
       </Link>
-      {!accessToken ? (
+      {!hasHydrated ? (
+        // 토큰을 불러오기 전에는 로그인 버튼이 잠깐 보였다 바뀌지 않도록 자리만 잡아 둔다.
+        <span className="h-[30px] w-[72px] animate-pulse rounded-md bg-gray-200" aria-hidden />
+      ) : !accessToken ? (
         <Link className="rounded-md bg-[#2563eb] px-3.5 py-1.5 text-[11px] font-bold text-white no-underline" href="/login">로그인</Link>
       ) : meQuery.isLoading ? (
         <span className="h-[30px] w-[72px] animate-pulse rounded-md bg-gray-200" aria-hidden />

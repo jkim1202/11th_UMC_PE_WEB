@@ -2,6 +2,7 @@ import { create } from "zustand";
 
 interface BookmarkStore {
   bookmarkedMovieIds: number[];
+  hydrate: () => void;
   toggleBookmark: (movieId: number) => void;
 }
 
@@ -20,7 +21,10 @@ function loadBookmarkedMovieIds(): number[] {
 }
 
 export const useBookmarkStore = create<BookmarkStore>((set) => ({
-  bookmarkedMovieIds: loadBookmarkedMovieIds(),
+  // 서버에는 localStorage가 없으므로 빈 배열로 시작하고,
+  // 브라우저에서 마운트된 뒤 hydrate()로 저장된 값을 불러온다.
+  bookmarkedMovieIds: [],
+  hydrate: () => set({ bookmarkedMovieIds: loadBookmarkedMovieIds() }),
   toggleBookmark: (movieId) =>
     set((state) => {
       const bookmarkedMovieIds = state.bookmarkedMovieIds.includes(movieId)
