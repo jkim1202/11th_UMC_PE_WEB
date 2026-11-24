@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
-import { Link } from "@tanstack/react-router";
+import Link from "next/link";
 import type { MemberRating } from "../../api/ratings/get-member-ratings";
 import {
   useCreateRatingMutation,
@@ -106,7 +106,7 @@ export default function MyRatingCard({ movieId }: MyRatingCardProps) {
               <button className="h-6 w-6 rounded border border-[#e1e5ea] bg-white text-xs text-[#727b8c] disabled:cursor-not-allowed disabled:opacity-60" key={star} type="button" aria-label={`${star}점`} disabled>★</button>
             ))}
           </div>
-          <Link className="mt-3 block w-full rounded bg-[#191b20] py-2 text-center text-[10px] font-bold text-white no-underline" to="/login">로그인</Link>
+          <Link className="mt-3 block w-full rounded bg-[#191b20] py-2 text-center text-[10px] font-bold text-white no-underline" href="/login">로그인</Link>
         </>
       )}
     </aside>

@@ -1,5 +1,7 @@
+"use client";
+
 import { useState } from "react";
-import { Link } from "@tanstack/react-router";
+import Link from "next/link";
 import { useQueries } from "@tanstack/react-query";
 import { getMovieDetail } from "../../api/movies/get-movie-detail";
 import type { TmdbMovieListItem } from "../../api/movies/models";
@@ -42,7 +44,7 @@ export default function MyPage() {
       <main className="mx-auto w-[calc(100%-96px)] max-w-[1126px] flex-1 box-border py-4 pb-[76px] max-[640px]:w-[calc(100%-32px)]">
         <div className="flex items-center justify-between border-b border-[#dfe3e8] pb-4">
           <h1 className="text-2xl font-extrabold leading-[1.3] tracking-[-1px] text-[#191b20]">내 정보</h1>
-          <Link className="rounded-md bg-[#2563eb] px-4 py-2 text-[11px] font-bold text-white no-underline" to="/my/edit">정보 수정</Link>
+          <Link className="rounded-md bg-[#2563eb] px-4 py-2 text-[11px] font-bold text-white no-underline" href="/my/edit">정보 수정</Link>
         </div>
 
         <section className="border-b border-[#dfe3e8] py-5" aria-labelledby="basic-info">

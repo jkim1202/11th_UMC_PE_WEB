@@ -1,4 +1,4 @@
-import { useNavigate } from "@tanstack/react-router";
+import { useRouter } from "next/navigation";
 import { useFavoriteQuery, useToggleFavoriteMutation } from "../hooks/use-favorites";
 import { useAuthStore } from "../stores/auth-store";
 import { cn } from "../utils/cn";
@@ -10,7 +10,7 @@ interface FavoriteButtonProps {
 }
 
 export function FavoriteButton({ movieId, movieTitle, className }: FavoriteButtonProps) {
-  const navigate = useNavigate();
+  const router = useRouter();
   const accessToken = useAuthStore((state) => state.accessToken);
   const isValidMovieId = Number.isInteger(movieId) && movieId > 0;
   const favoriteQuery = useFavoriteQuery(movieId, isValidMovieId);
@@ -23,7 +23,7 @@ export function FavoriteButton({ movieId, movieTitle, className }: FavoriteButto
   function handleClick() {
     if (!accessToken) {
       alert("로그인이 필요해요.");
-      void navigate({ to: "/login" });
+      router.push("/login");
       return;
     }
     if (isBusy) return;

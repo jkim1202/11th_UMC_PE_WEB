@@ -33,3 +33,5 @@ dist-ssr
 .omx
 .tanstack
 *.tsbuildinfo
+.next
+next-env.d.ts

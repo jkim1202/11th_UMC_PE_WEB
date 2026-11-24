@@ -1,4 +1,7 @@
-import { Link, useParams } from "@tanstack/react-router";
+"use client";
+
+import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { getMovieDetail } from "../../api/movies/get-movie-detail";
 import { getMovieDetailErrorMessage } from "../../utils/movies/get-movie-detail-error-message";
@@ -8,7 +11,7 @@ import MyRatingCard from "../../components/movies/my-rating-card";
 import Footer from "../../components/layout/footer";
 
 export default function MovieDetailPage() {
-  const { movieId } = useParams({ from: "/movies/$movieId" });
+  const { movieId } = useParams<{ movieId: string }>();
   const parsedMovieId = Number(movieId);
   const isValidMovieId = Number.isInteger(parsedMovieId) && parsedMovieId > 0;
 
@@ -33,7 +36,7 @@ export default function MovieDetailPage() {
           <img className="absolute inset-0 h-full w-full object-cover opacity-80" src={getTmdbBackdropUrl(movie.backdrop_path) ?? undefined} alt="" />
           <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/30 to-transparent" />
           <div className="absolute inset-x-0 bottom-0 p-8 text-white max-[640px]:p-5">
-            <Link className="mb-12 block text-[10px] text-white/80 no-underline max-[640px]:mb-8" to="/">‹ 영화 목록</Link>
+            <Link className="mb-12 block text-[10px] text-white/80 no-underline max-[640px]:mb-8" href="/">‹ 영화 목록</Link>
             <h1 className="m-0 text-3xl font-extrabold tracking-[-1px] max-[640px]:text-2xl">{movie.title}</h1>
             <p className="mt-1 text-[10px] text-white/80">{movie.original_title}</p>
             <p className="mt-2 text-[10px]">{movie.release_date} · {movie.genres.map((genre) => genre.name).join(" · ")}{movie.runtime ? ` · ${movie.runtime}분` : ""}</p>
