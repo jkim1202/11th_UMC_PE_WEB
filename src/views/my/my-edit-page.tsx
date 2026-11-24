@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import type { ChangeEvent, SubmitEvent } from "react";
 import { checkNicknameDuplicate } from "../../api/members/check-nickname-duplicate";

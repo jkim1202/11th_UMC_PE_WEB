@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
+import { useRouter } from "next/navigation";
 import { login } from "../api/auth/login";
 import { useAuthStore } from "../stores/auth-store";
 import { FAVORITES_QUERY_KEY } from "./use-favorites";
@@ -7,7 +7,7 @@ import { ME_QUERY_KEY } from "./use-me-query";
 
 export function useLoginMutation() {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  const router = useRouter();
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
 
   return useMutation({
@@ -17,7 +17,7 @@ export function useLoginMutation() {
       alert("로그인에 성공했어요.");
       void queryClient.invalidateQueries({ queryKey: ME_QUERY_KEY });
       queryClient.removeQueries({ queryKey: FAVORITES_QUERY_KEY });
-      void navigate({ to: "/" });
+      router.push("/");
     },
     onError: () => {
       alert("로그인에 실패했어요. 다시 시도해 주세요.");

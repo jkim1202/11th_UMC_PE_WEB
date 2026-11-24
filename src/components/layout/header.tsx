@@ -1,11 +1,14 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useMeQuery } from "../../hooks/use-me-query";
 import { useAuthStore } from "../../stores/auth-store";
 import { cn } from "../../utils/cn";
 
 function Logo() {
   return (
-    <Link className="flex items-center gap-1.5 text-base font-extrabold text-[#111] no-underline" to="/">
+    <Link className="flex items-center gap-1.5 text-base font-extrabold text-[#111] no-underline" href="/">
       <img className="h-6 w-6" src="/icons/movie-icons/movie.svg" alt="" />
       <span>UMCine</span>
     </Link>
@@ -13,13 +16,13 @@ function Logo() {
 }
 
 function Navigation() {
-  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const pathname = usePathname();
 
   return (
     <nav className="flex gap-[22px]" aria-label="메인 메뉴">
-      <Link className={cn("text-[11px] text-[#555] no-underline", pathname === "/" && "font-bold text-[#111] underline underline-offset-[5px]")} to="/">영화</Link>
-      <Link className={cn("text-[11px] text-[#555] no-underline", pathname === "/search" && "font-bold text-[#111] underline underline-offset-[5px]")} to="/search" search={{ query: "" }}>검색</Link>
-      <Link className={cn("text-[11px] text-[#555] no-underline", pathname.startsWith("/my") && "font-bold text-[#111] underline underline-offset-[5px]")} to="/my">내 정보</Link>
+      <Link className={cn("text-[11px] text-[#555] no-underline", pathname === "/" && "font-bold text-[#111] underline underline-offset-[5px]")} href="/">영화</Link>
+      <Link className={cn("text-[11px] text-[#555] no-underline", pathname === "/search" && "font-bold text-[#111] underline underline-offset-[5px]")} href="/search">검색</Link>
+      <Link className={cn("text-[11px] text-[#555] no-underline", pathname.startsWith("/my") && "font-bold text-[#111] underline underline-offset-[5px]")} href="/my">내 정보</Link>
     </nav>
   );
 }
@@ -30,15 +33,15 @@ function HeaderActions() {
 
   return (
     <div className="ml-auto flex items-center gap-2">
-      <Link className="grid h-[30px] w-[30px] place-items-center rounded-md border border-[#e5e7eb] p-1.5" to="/search" search={{ query: "" }} aria-label="검색">
+      <Link className="grid h-[30px] w-[30px] place-items-center rounded-md border border-[#e5e7eb] p-1.5" href="/search" aria-label="검색">
         <img className="h-4 w-4" src="/icons/movie-icons/search.svg" alt="" />
       </Link>
       {!accessToken ? (
-        <Link className="rounded-md bg-[#2563eb] px-3.5 py-1.5 text-[11px] font-bold text-white no-underline" to="/login">로그인</Link>
+        <Link className="rounded-md bg-[#2563eb] px-3.5 py-1.5 text-[11px] font-bold text-white no-underline" href="/login">로그인</Link>
       ) : meQuery.isLoading ? (
         <span className="h-[30px] w-[72px] animate-pulse rounded-md bg-gray-200" aria-hidden />
       ) : (
-        <Link className="rounded-md bg-[#2563eb] px-3.5 py-1.5 text-[11px] font-bold text-white no-underline" to="/my">마이페이지</Link>
+        <Link className="rounded-md bg-[#2563eb] px-3.5 py-1.5 text-[11px] font-bold text-white no-underline" href="/my">마이페이지</Link>
       )}
     </div>
   );

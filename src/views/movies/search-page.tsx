@@ -1,14 +1,18 @@
+"use client";
+
 import { useState } from "react";
 import type { FormEvent } from "react";
-import { Link, useNavigate, useSearch } from "@tanstack/react-router";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { searchMovies } from "../../api/movies/search-movies";
 import Footer from "../../components/layout/footer";
 import { BookmarkButton } from "../../components/bookmark-button";
 
 export default function SearchPage() {
-  const { query } = useSearch({ from: "/search" });
-  const navigate = useNavigate({ from: "/search" });
+  const searchParams = useSearchParams();
+  const query = searchParams.get("query") ?? "";
+  const router = useRouter();
   const [input, setInput] = useState(query);
 
   const normalizedQuery = query.trim();
@@ -23,7 +27,7 @@ export default function SearchPage() {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    void navigate({ search: { query: input.trim() } });
+    router.push(`/search?query=${encodeURIComponent(input.trim())}`);
   }
 
   return (
@@ -47,7 +51,7 @@ export default function SearchPage() {
               <section className="grid grid-cols-2 gap-x-8 gap-y-3 max-[640px]:grid-cols-1" aria-label="검색 결과">
                 {searchResults.map((movie) => (
                   <article className="relative min-w-0 border-b border-[#e8ebef] pb-3" key={movie.id}>
-                    <Link className="flex min-w-0 gap-3 no-underline" to="/movies/$movieId" params={{ movieId: String(movie.id) }}>
+                    <Link className="flex min-w-0 gap-3 no-underline" href={`/movies/${movie.id}`}>
                       <img className="h-[88px] w-[58px] shrink-0 rounded object-cover" src={movie.poster_path ? `https://image.tmdb.org/t/p/w185${movie.poster_path}` : undefined} alt={`${movie.title} 포스터`} />
                       <span className="min-w-0 pt-0.5">
                         <strong className="block truncate text-xs text-[#191b20]">{movie.title}</strong>

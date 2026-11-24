@@ -1,6 +1,8 @@
+"use client";
+
 import { useState } from "react";
 import type { SubmitEvent } from "react";
-import { Link } from "@tanstack/react-router";
+import Link from "next/link";
 import { useLoginMutation } from "../../hooks/use-login-mutation";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -59,7 +61,7 @@ export default function LoginPage() {
         </button>
         <p className="mt-4 text-center text-[11px] text-[#727b8c]">
           처음이신가요?{" "}
-          <Link className="font-bold text-[#2563eb]" to="/signup">회원가입</Link>
+          <Link className="font-bold text-[#2563eb]" href="/signup">회원가입</Link>
         </p>
       </form>
     </main>
